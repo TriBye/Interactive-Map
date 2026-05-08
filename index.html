@@ -1,60 +1,52 @@
+<!-- index.html -->
+
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Interaktive Weltkarte</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIINfQPDwE2FfQTRfR9RHTu7N2vuLqh+I="
-      crossorigin=""
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <main class="app-shell">
-      <section class="map-area" aria-label="Interaktive Weltkarte">
-        <div class="map-toolbar">
-          <div>
-            <p class="eyebrow">Weltkarte</p>
-            <h1>Interaktive Länderkarte</h1>
-          </div>
-          <button id="showFavoritesBtn" class="icon-button" type="button" title="Favoriten anzeigen">
-            ★
-            <span id="favoriteCount">0</span>
-          </button>
-        </div>
-        <div id="map"></div>
-      </section>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      <aside class="info-panel" aria-live="polite">
-        <section id="countryDetails" class="panel-section">
-          <p class="eyebrow">Auswahl</p>
-          <h2>Wähle ein Land</h2>
-          <p class="muted">
-            Klicke auf ein Land in der Karte, um Informationen und das aktuelle Wetter zu sehen.
-          </p>
-        </section>
+  <title>Interactive Worldmap</title>
 
-        <section class="panel-section favorites-section">
-          <div class="section-header">
-            <div>
-              <p class="eyebrow">Gespeichert</p>
-              <h2>Favoriten</h2>
-            </div>
-            <button id="clearFavoritesBtn" class="text-button" type="button">Leeren</button>
-          </div>
-          <div id="favoritesList" class="favorites-list"></div>
-        </section>
-      </aside>
-    </main>
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  >
 
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-      crossorigin=""
-    ></script>
-    <script src="script.js"></script>
-  </body>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+
+    <h1>Worldmap</h1>
+
+    <!-- Länderinfos -->
+    <div id="info">
+      <h2>Select Country</h2>
+      <p>Click a Country to display</p>
+    </div>
+
+    <!-- Favoriten -->
+    <div id="favorites">
+
+      <h2>⭐ Favorites</h2>
+
+      <ul id="favorites-list"></ul>
+
+    </div>
+
+  </div>
+
+  <!-- Karte -->
+  <div id="map"></div>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script src="script.js"></script>
+
+</body>
 </html>
