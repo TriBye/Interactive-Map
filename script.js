@@ -39,20 +39,17 @@ const longitude = Cesium.Math.toDegrees(cartographic.longitude);
 const latitude  = Cesium.Math.toDegrees(cartographic.latitude);
 const height    = cartographic.height;
 
+// Set Map with L.map *1
+const map = L.map("map").setView([20, 0], 2);
 
-// OpenStreetMap
-L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    attribution: "&copy; OpenStreetMap"
-  }
-).addTo(map);
+// Load Tiles with L.tileLayer *2
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
-// Load Favorites
+// Load Favorites from localStorage
 let favorites =
   JSON.parse(localStorage.getItem("favorites")) || [];
 
-// Save Favorites
+// Save Favorites to localStorage
 function saveFavorites() {
 
   localStorage.setItem(
@@ -61,7 +58,7 @@ function saveFavorites() {
   );
 }
 
-// Show Favorites
+// Display Favorites
 function renderFavorites() {
 
   const favoritesList =
@@ -73,6 +70,7 @@ function renderFavorites() {
 
     const li = document.createElement("li");
 
+    // List item HTML
     li.innerHTML = `
       <span>${country}</span>
 
@@ -81,7 +79,7 @@ function renderFavorites() {
       </button>
     `;
 
-    // Remove Favorites
+    // Removal Button Function
     li.querySelector(".remove-btn")
       .addEventListener("click", () => {
 
@@ -110,18 +108,20 @@ function addFavorite(countryName) {
   }
 }
 
-// Erste Anzeige
+// First Display of Favorites
 renderFavorites();
 
-// GeoJSON Länder laden
+// Load GeoJSON
 fetch(
   "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json"
 )
   .then(res => res.json())
   .then(data => {
 
+    // L.geoJSON Function -> display countries outline
     L.geoJSON(data, {
 
+      // Outline and Fill Style
       style: {
         color: "#2563eb",
         weight: 1,
@@ -129,6 +129,7 @@ fetch(
         fillOpacity: 0.4
       },
 
+      // Hover and Click Logic
       onEachFeature: (feature, layer) => {
 
         // Hover
@@ -139,7 +140,7 @@ fetch(
           });
         });
 
-        // Hover verlassen
+        // leave Hover
         layer.on("mouseout", () => {
 
           layer.setStyle({
@@ -147,40 +148,35 @@ fetch(
           });
         });
 
-        // Klick auf Land
+        // Click
         layer.on("click", async () => {
 
           const countryName =
             feature.properties.name;
 
-          // Ladeanzeige
-          document.getElementById("info").innerHTML = `
-            <h2>${countryName}</h2>
-
-            <p>Load informations...</p>
-          `;
-
-          // Länderinfos laden
+          // Country Info API
           const countryRes = await fetch(
             `https://restcountries.com/v3.1/name/${countryName}`
           );
 
+          // Whole JSON
           const countryData =
             await countryRes.json();
 
+          // First JSON Element = Country
           const country = countryData[0];
 
-          // Hauptstadt
+          // country.capital -> capital. If multiple capital -> first one
           const capital =
             country.capital
               ? country.capital[0]
               : "Unknown";
 
-          // Wetter
+          // Weather Text (currently empty)
           let weatherText =
             "No Weatherdata";
 
-          // Geocoding
+          // Geocoding for Coordinates to use for Weather API
           const geoRes = await fetch(
             `https://geocoding-api.open-meteo.com/v1/search?name=${capital}`
           );
@@ -188,27 +184,31 @@ fetch(
           const geoData =
             await geoRes.json();
 
+          // Coordinates for the Capital: latitude and longitude
           if (geoData.results) {
-
+            
+            // latitude
             const lat =
               geoData.results[0].latitude;
 
+            // longitude
             const lon =
               geoData.results[0].longitude;
 
-            // Wetter API
+            // Weather API with the Coordinates
             const weatherRes = await fetch(
               `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`
             );
-
+            
             const weatherData =
               await weatherRes.json();
 
+            // update the weather text to the temperature
             weatherText =
               `${weatherData.current_weather.temperature}°C`;
           }
 
-          // Länderinfos anzeigen
+          // Show Country information HTML
           document.getElementById("info").innerHTML = `
             <h2>${country.name.common}</h2>
 
