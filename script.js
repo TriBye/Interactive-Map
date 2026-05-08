@@ -39,9 +39,6 @@ const longitude = Cesium.Math.toDegrees(cartographic.longitude);
 const latitude  = Cesium.Math.toDegrees(cartographic.latitude);
 const height    = cartographic.height;
 
-// Set Map with L.map *1
-const map = L.map("map").setView([20, 0], 2);
-
 // Load Tiles with L.tileLayer *2
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
