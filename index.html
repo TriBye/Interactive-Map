@@ -8,12 +8,15 @@
 
   <title>Interactive Worldmap</title>
 
-  <!-- Leaflet -->
+  <!-- LINKS -->
+    <!-- Leaflet -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet/dist/leaflet.css"
   >
-
+    <!-- Cesium -->
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.141/Build/Cesium/Cesium.js"></script>
+    <!-- Style -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -40,8 +43,13 @@
 
   </div>
 
-  <!-- Karte -->
-  <div id="map"></div>
+  <div id="mapcontainer">
+    <!-- Karte 2d -->
+    <div id="map"></div>
+    <!-- Karte 3d -->
+    <div id="cesiumContainer"></div>
+  </div>
+
 
   <!-- Leaflet -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

@@ -1,7 +1,44 @@
 // script.js
 
 // MAP
-const map = L.map("map").setView([20, 0], 2);
+const map = L.map("map").setView([48.1374, 11.5755], 4);
+
+//Cesium Map
+Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiOWRlMDJmNi1iNjY1LTQzOWYtOTBjMy0yZDI0ZjkxMTE0MWMiLCJpZCI6NDI3OTY3LCJpc3MiOiJodHRwczovL2lvbi5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3NzgwNzIxOTR9.kKzEHDrNciJYRs9XQiWJVdjwIpkdf1iZ7VF5EZ5H3Q8';
+
+const viewer = new Cesium.Viewer('cesiumContainer', {
+  terrain: Cesium.Terrain.fromWorldTerrain(),
+  animation: false,
+  baseLayerPicker: false,
+  fullscreenButton: false,
+  geocoder: false,
+  homeButton: false,
+  infoBox: false,
+  sceneModePicker: false,
+  selectionIndicator: false,
+  timeline: false,
+  navigationHelpButton: false,
+  navigationInstructionsInitiallyVisible: false,
+});    
+
+viewer.camera.flyTo({
+    destination: Cesium.Cartesian3.fromDegrees(11.5755, 48.1374, 6000000),
+});
+// Hide Credits
+viewer.cesiumWidget.creditContainer.style.display = "none";
+// Disable Rotation
+viewer.scene.screenSpaceCameraController.enableTilt = false;
+// Get latitude and longitude
+const camera = viewer.camera;
+
+const cartographic = Cesium.Cartographic.fromCartesian(
+    camera.position
+);
+
+const longitude = Cesium.Math.toDegrees(cartographic.longitude);
+const latitude  = Cesium.Math.toDegrees(cartographic.latitude);
+const height    = cartographic.height;
+
 
 // OpenStreetMap
 L.tileLayer(
@@ -257,3 +294,71 @@ fetch(
     }).addTo(map);
 
   });
+
+  let syncing = false;
+
+// --- Cesium → Leaflet sync ---
+viewer.camera.changed.addEventListener(() => {
+  if (syncing) return;
+  syncing = true;
+
+  const cartographic = Cesium.Cartographic.fromCartesian(
+    viewer.camera.positionWC,
+    Cesium.Ellipsoid.WGS84
+  );
+
+  const height = cartographic.height;
+
+  const lat = Cesium.Math.toDegrees(cartographic.latitude);
+  const lng = Cesium.Math.toDegrees(cartographic.longitude);
+
+  const mapEl = document.getElementById("map");
+  const cesiumEl = document.getElementById("cesiumContainer");
+
+  // Switch to Leaflet if zoomed in (low altitude)
+  if (height < 6000000) {
+    map.setView([lat, lng], 4);
+    viewer.camera.setView({
+      destination: Cesium.Cartesian3.fromDegrees(
+        lng,
+        lat,
+        6000000
+      ),
+    });
+
+    if (mapEl) mapEl.style.opacity = "1";
+    if (cesiumEl) cesiumEl.style.opacity = "0";
+  }
+
+  syncing = false;
+});
+
+
+// --- Leaflet → Cesium sync ---
+map.on("zoom", () => {
+  if (syncing) return;
+  syncing = true;
+
+  const zoom = map.getZoom();
+  const center = map.getCenter();
+
+  const mapEl = document.getElementById("map");
+  const cesiumEl = document.getElementById("cesiumContainer");
+
+  // Switch to Cesium if zoomed out
+  if (zoom < 4) {
+    viewer.camera.setView({
+      destination: Cesium.Cartesian3.fromDegrees(
+        center.lng,
+        center.lat,
+        6000000
+      ),
+    });
+    map.setView([center.lat, center.lng], 4);
+
+    if (mapEl) mapEl.style.opacity = "0";
+    if (cesiumEl) cesiumEl.style.opacity = "1";
+  }
+
+  syncing = false;
+});
