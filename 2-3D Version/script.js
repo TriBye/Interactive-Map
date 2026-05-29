@@ -1,13 +1,28 @@
 // script.js
 
 // MAP
-const map = L.map("map").setView([48.1374, 11.5755], 4);
+const mapEl = document.getElementById("map");
+const cesiumEl = document.getElementById("cesiumContainer");
+
+const SWITCH_CAMERA_HEIGHT = 6000000;
+const SWITCH_LEAFLET_ZOOM = 4;
+const CESIUM_ZOOM_HEIGHT_EPSILON = 10000;
+
+const map = L.map("map", {
+  preferCanvas: true,
+}).setView([48.1374, 11.5755], SWITCH_LEAFLET_ZOOM);
 
 //Cesium Map
-Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiOWRlMDJmNi1iNjY1LTQzOWYtOTBjMy0yZDI0ZjkxMTE0MWMiLCJpZCI6NDI3OTY3LCJpc3MiOiJodHRwczovL2lvbi5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3NzgwNzIxOTR9.kKzEHDrNciJYRs9XQiWJVdjwIpkdf1iZ7VF5EZ5H3Q8';
+if (!window.CESIUM_ION_TOKEN) {
+  throw new Error("Missing Cesium Ion token. Create cesium-token.js next to script.js.");
+}
+
+Cesium.Ion.defaultAccessToken = window.CESIUM_ION_TOKEN;
 
 const viewer = new Cesium.Viewer('cesiumContainer', {
   terrain: Cesium.Terrain.fromWorldTerrain(),
+  requestRenderMode: true,
+  maximumRenderTimeChange: Infinity,
   animation: false,
   baseLayerPicker: false,
   fullscreenButton: false,
@@ -21,13 +36,53 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
   navigationInstructionsInitiallyVisible: false,
 });    
 
-viewer.camera.flyTo({
-    destination: Cesium.Cartesian3.fromDegrees(11.5755, 48.1374, 6000000),
+let activeMapMode = "3d";
+
+function setMapMode(mode) {
+
+  if (activeMapMode === mode) return;
+
+  activeMapMode = mode;
+
+  if (mode === "2d") {
+    if (mapEl) mapEl.classList.add("active");
+    if (cesiumEl) cesiumEl.classList.remove("active");
+
+    viewer.scene.screenSpaceCameraController.enableInputs = false;
+    viewer.useDefaultRenderLoop = false;
+    map.invalidateSize();
+
+    return;
+  }
+
+  if (mapEl) mapEl.classList.remove("active");
+  if (cesiumEl) cesiumEl.classList.add("active");
+
+  viewer.scene.screenSpaceCameraController.enableInputs = true;
+  viewer.useDefaultRenderLoop = true;
+  viewer.resize();
+  viewer.scene.requestRender();
+}
+
+if (cesiumEl) cesiumEl.classList.add("active");
+
+viewer.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(
+      11.5755,
+      48.1374,
+      SWITCH_CAMERA_HEIGHT
+    ),
 });
 // Hide Credits
 viewer.cesiumWidget.creditContainer.style.display = "none";
 // Disable Rotation
-viewer.scene.screenSpaceCameraController.enableTilt = false;
+const cameraController =
+  viewer.scene.screenSpaceCameraController;
+
+cameraController.enableTilt = false;
+cameraController.inertiaSpin = 0;
+cameraController.inertiaTranslate = 0;
+cameraController.inertiaZoom = 0;
 // Get latitude and longitude
 const camera = viewer.camera;
 
@@ -292,70 +347,128 @@ fetch(
 
   });
 
-  let syncing = false;
+let syncing = false;
+let cesiumMoveStartHeight = null;
+let cesiumSwitchFrame = null;
 
-// --- Cesium → Leaflet sync ---
-viewer.camera.changed.addEventListener(() => {
-  if (syncing) return;
-  syncing = true;
+function getCesiumCameraState() {
 
   const cartographic = Cesium.Cartographic.fromCartesian(
     viewer.camera.positionWC,
     Cesium.Ellipsoid.WGS84
   );
 
-  const height = cartographic.height;
+  return {
+    height: cartographic.height,
+    lat: Cesium.Math.toDegrees(cartographic.latitude),
+    lng: Cesium.Math.toDegrees(cartographic.longitude),
+  };
+}
 
-  const lat = Cesium.Math.toDegrees(cartographic.latitude);
-  const lng = Cesium.Math.toDegrees(cartographic.longitude);
+function switchCesiumToLeaflet(cameraState) {
 
-  const mapEl = document.getElementById("map");
-  const cesiumEl = document.getElementById("cesiumContainer");
+  syncing = true;
 
-  // Switch to Leaflet if zoomed in (low altitude)
-  if (height < 6000000) {
-    map.setView([lat, lng], 4);
-    viewer.camera.setView({
-      destination: Cesium.Cartesian3.fromDegrees(
-        lng,
-        lat,
-        6000000
-      ),
-    });
+  map.setView(
+    [cameraState.lat, cameraState.lng],
+    SWITCH_LEAFLET_ZOOM,
+    { animate: false }
+  );
 
-    if (mapEl) mapEl.style.opacity = "1";
-    if (cesiumEl) cesiumEl.style.opacity = "0";
+  viewer.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(
+      cameraState.lng,
+      cameraState.lat,
+      SWITCH_CAMERA_HEIGHT
+    ),
+  });
+
+  setMapMode("2d");
+
+  cesiumMoveStartHeight = null;
+  syncing = false;
+}
+
+function checkCesiumToLeafletSwitch() {
+
+  cesiumSwitchFrame = null;
+
+  if (syncing || activeMapMode !== "3d") return;
+
+  const cameraState =
+    getCesiumCameraState();
+
+  if (cesiumMoveStartHeight === null) {
+    cesiumMoveStartHeight =
+      cameraState.height;
   }
 
-  syncing = false;
+  const zoomedIn =
+    cesiumMoveStartHeight -
+      cameraState.height >
+    CESIUM_ZOOM_HEIGHT_EPSILON;
+
+  if (
+    zoomedIn &&
+    cameraState.height <=
+      SWITCH_CAMERA_HEIGHT
+  ) {
+    switchCesiumToLeaflet(cameraState);
+  }
+}
+
+// --- Cesium → Leaflet sync ---
+viewer.camera.moveStart.addEventListener(() => {
+
+  if (syncing || activeMapMode !== "3d") return;
+
+  cesiumMoveStartHeight =
+    getCesiumCameraState().height;
+});
+
+viewer.camera.changed.addEventListener(() => {
+
+  if (syncing || activeMapMode !== "3d") return;
+  if (cesiumSwitchFrame !== null) return;
+
+  cesiumSwitchFrame =
+    requestAnimationFrame(
+      checkCesiumToLeafletSwitch
+    );
+});
+
+viewer.camera.moveEnd.addEventListener(() => {
+  cesiumMoveStartHeight = null;
 });
 
 
 // --- Leaflet → Cesium sync ---
-map.on("zoom", () => {
+map.on("zoomend", () => {
   if (syncing) return;
-  syncing = true;
 
   const zoom = map.getZoom();
   const center = map.getCenter();
 
-  const mapEl = document.getElementById("map");
-  const cesiumEl = document.getElementById("cesiumContainer");
-
   // Switch to Cesium if zoomed out
-  if (zoom < 4) {
-    viewer.camera.setView({
-      destination: Cesium.Cartesian3.fromDegrees(
-        center.lng,
-        center.lat,
-        6000000
-      ),
-    });
-    map.setView([center.lat, center.lng], 4);
+  if (zoom >= SWITCH_LEAFLET_ZOOM) return;
 
-    if (mapEl) mapEl.style.opacity = "0";
-    if (cesiumEl) cesiumEl.style.opacity = "1";
-  }
+  syncing = true;
+
+  viewer.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(
+      center.lng,
+      center.lat,
+      SWITCH_CAMERA_HEIGHT
+    ),
+  });
+
+  map.setView(
+    [center.lat, center.lng],
+    SWITCH_LEAFLET_ZOOM,
+    { animate: false }
+  );
+
+  setMapMode("3d");
 
   syncing = false;
 });

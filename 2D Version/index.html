@@ -1,0 +1,54 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive world map with country information and weather data">
+
+  <title>Interactive Worldmap</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" role="complementary" aria-label="Country information and favorites">
+
+    <h1>🌍 Worldmap</h1>
+
+    <!-- Country Information -->
+    <section id="info" aria-live="polite" aria-label="Selected country information">
+      <h2>Select Country</h2>
+      <p>Click a country to display information</p>
+    </section>
+
+    <!-- Favorites Section -->
+    <section id="favorites" aria-label="Favorite countries">
+      <h2>⭐ Favorites</h2>
+      <ul id="favorites-list" role="list"></ul>
+    </section>
+
+  </aside>
+
+  <!-- Map Container -->
+  <main id="mapcontainer" role="main" aria-label="Interactive map display">
+    <div id="map" role="region" aria-label="Leaflet map"></div>
+  </main>
+
+  <!-- Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Main Application Script -->
+  <script src="script.js"></script>
+
+</body>
+</html>
