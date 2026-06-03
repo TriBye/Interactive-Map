@@ -9,6 +9,18 @@
 </p>
 
 <p align="center">
+  <a href="https://tribye.github.io/Interactive-Map/2D%20Version/index.html">
+    <img alt="Online Preview (2D)" src="https://img.shields.io/badge/Online%20Preview%20(2D)-2563EB?style=for-the-badge&logoColor=white">
+  </a>
+  <a href="https://tribye.github.io/Interactive-Map/2-3D%20Version/index.html">
+    <img alt="Online Preview (2/3D)" src="https://img.shields.io/badge/Online%20Preview%20(2/3D)-2563EB?style=for-the-badge&logo=css3&logoColor=white">
+  </a>
+  <a href="https://github.com/tribye/interactive-map">
+    <img alt="Repository" src="https://img.shields.io/badge/Repository-24292F?style=for-the-badge&logo=github&logoColor=white">
+  </a>
+</p>
+
+<p align="center">
   <img alt="HTML" src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
   <img alt="CSS" src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white">
   <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=111">

@@ -12,12 +12,16 @@ const map = L.map("map", {
   preferCanvas: true,
 }).setView([48.1374, 11.5755], SWITCH_LEAFLET_ZOOM);
 
+/*
 //Cesium Map
 if (!window.CESIUM_ION_TOKEN) {
   throw new Error("Missing Cesium Ion token. Create cesium-token.js next to script.js.");
 }
 
 Cesium.Ion.defaultAccessToken = window.CESIUM_ION_TOKEN;
+*/
+
+Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiOWRlMDJmNi1iNjY1LTQzOWYtOTBjMy0yZDI0ZjkxMTE0MWMiLCJpZCI6NDI3OTY3LCJpc3MiOiJodHRwczovL2lvbi5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3NzgwNzIxOTR9.kKzEHDrNciJYRs9XQiWJVdjwIpkdf1iZ7VF5EZ5H3Q8";
 
 const viewer = new Cesium.Viewer('cesiumContainer', {
   terrain: Cesium.Terrain.fromWorldTerrain(),
