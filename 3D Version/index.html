@@ -1,0 +1,46 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Interactive Worldmap</title>
+
+  <!-- LINKS -->
+    <!-- Cesium website  -->
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.141/Build/Cesium/Cesium.js"></script>
+    <!-- Style -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top -->
+  <div id="top">
+
+    <h1>W O R L D M A P</h1>
+
+  </div>
+
+  <div id="mapcontainer">
+    <!-- Map 3d -->
+    <div id="cesiumContainer">
+      <div id="overlay-box">
+        <!-- Infos -->
+        <img id="countryflag" src="">
+        <div id="geoinfos"></div>
+        <div id="weatherinfos"></div>
+        <div id="countryinfos"></div>
+      </div>
+      <input id="search-bar" type="text" placeholder="Search the database... 0.0">
+    </div>
+      
+     
+  </div>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
