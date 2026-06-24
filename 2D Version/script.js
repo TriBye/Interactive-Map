@@ -153,13 +153,12 @@ fetch("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.g
  
             // Fetch country info
             const countryRes = await fetch(
-              `https://restcountries.com/v3.1/name/${countryName}`
+              `https://studies.cs.helsinki.fi/restcountries/api/name/${encodeURIComponent(countryName)}`
             );
- 
+
             if (!countryRes.ok) throw new Error("Country not found");
- 
-            const countryData = await countryRes.json();
-            const country = countryData[0];
+
+            const country = await countryRes.json();
  
             const capital = country.capital ? country.capital[0] : "Unknown";
             let weatherText = "No Weather Data";
