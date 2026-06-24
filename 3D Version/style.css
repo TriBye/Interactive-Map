@@ -111,6 +111,8 @@ body {
 
   width: 30rem;
   padding: 1rem;
+  max-height: 80%;
+  overflow-y: auto; 
 
   background-color: var(--bg);
   color: var(--accent);
@@ -188,6 +190,8 @@ body {
 
   #overlay-box {
     width: calc(100% - 2rem);
+    max-height: 40%;
+    overflow-y: auto; 
 
     left: 1rem;
     right: 1rem;

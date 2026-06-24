@@ -49,6 +49,10 @@ const camera = viewer.camera;
 // Database for OSM data with coordinates --> lan, lon (Public API, without API key, but with usage limits)
 // Documentation: https://nominatim.org/release-docs/latest/api/Search/
 
+// Automatic Search
+searchLocation("Germany")
+
+// main function
 function searchLocation(query) {
     const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
     let searchedlat, searchedlon;
@@ -61,7 +65,7 @@ function searchLocation(query) {
 
             // DEBUG
             console.log(data);
-            
+
             if (data.length > 0) {
 
                 // Variables for flyTo function
@@ -255,8 +259,8 @@ function fetchCountryInfoWIKI(country) {
     });
 }
 
-
 // Search bar functionality
+// searchbar + searchdatabase functions
 
 const searchBar = document.getElementById("search-bar");
 
@@ -265,7 +269,7 @@ searchBar.addEventListener("keydown", function (event) {
     const query = searchBar.value;
 
     // DEBUG
-    console.log("User pressed Enter:", query);
+    console.log("Query:", query);
 
     // Remove Infos
     document.getElementById("geoinfos").innerHTML = "";
@@ -283,5 +287,3 @@ function searchDatabase(text) {
   // DEBUG
   console.log("Searching for:", text);
 }
-
-// favorite locations functionality using localStorage
