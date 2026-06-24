@@ -1,4 +1,6 @@
 // script.js 
+
+// STRUCTURE
 //1. Cesium Map
 //2. Databases
 //  2.1 OpenStreetMap Nominatim API for geocoding
@@ -29,19 +31,19 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
   navigationInstructionsInitiallyVisible: false,
 });    
 
+// start FLYTO (Munich)
 viewer.camera.flyTo({
     destination: Cesium.Cartesian3.fromDegrees(11.5755, 48.1374, 20000000), //Munich
 });
+
 // Hide Credits
 viewer.cesiumWidget.creditContainer.style.display = "none";
+
 // Disable Rotation
 viewer.scene.screenSpaceCameraController.enableTilt = false;
+
 // Get latitude and longitude
 const camera = viewer.camera; 
-
-const cartographic = Cesium.Cartographic.fromCartesian(
-    camera.position
-);
 
 
 // Database for OSM data with coordinates --> lan, lon (Public API, without API key, but with usage limits)
@@ -51,11 +53,17 @@ function searchLocation(query) {
     const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
     let searchedlat, searchedlon;
     let height;
+
+    // Fetch from Nominatim
     fetch(url)
         .then((response) => response.json())
         .then((data) => {
+
+            // DEBUG
             console.log(data);
+            
             if (data.length > 0) {
+
                 // Variables for flyTo function
                 let searchedlat = parseFloat(data[0].lat);
                 let searchedlon = parseFloat(data[0].lon);
