@@ -33,6 +33,8 @@
   box-sizing: border-box; /* include padding and border in element width */
 }
 
+/* top, body, html */
+
 html, body {
   margin: 0; /* remove default page margin */
   height: 100%; /* allow flex container to fill viewport */
@@ -68,7 +70,8 @@ body {
     0 0 4px var(--accent);
 }
 
-/* map sections */
+/* Cesium map sections */
+
 #mapcontainer {
   display: grid;
   grid-template-rows: 1fr; /* one row */
@@ -98,6 +101,8 @@ body {
 .cesium-viewer .cesium-viewer-cesiumWidgetContainer .cesium-widget {
   height: 100vh;
 }
+
+/* overlay box */
 
 #overlay-box {
   position: absolute;
@@ -150,7 +155,7 @@ body {
   opacity: 0.9;
 }
 
-
+/* search bar */
 
 #search-bar {
   position: absolute;
@@ -172,6 +177,8 @@ body {
   border: var(--accent-strong);
   border-radius: var(--radius);
 }
+
+/* responsive design */
 
 @media (max-width: 940px) {
 

@@ -1,7 +1,13 @@
 // script.js 
 //1. Cesium Map
 //2. Databases
+//  2.1 OpenStreetMap Nominatim API for geocoding
+//  2.2 Open-Meteo API for weather data
+//  2.3 World Bank API for country income level
+//  2.4 Wikimedia REST API for country flag and info
 //3. Search functionality
+//4. Favorite locations functionality
+
 
 //Cesium Map
 // documentation: https://cesium.com/learn/cesiumjs-learn/cesiumjs-quickstart/
@@ -61,13 +67,12 @@ function searchLocation(query) {
                 let searchedname = data[0].name;
                 let searchedaddress = data[0].display_name;
 
-
                 // DEBUG
                 console.log(`Coordinates for ${query}: Latitude: ${searchedlat}, Longitude: ${searchedlon}`);
                 
                 // Quantitized height through place rank (Bucketmapping)
                 if (searchedplacerank >= 2 && searchedplacerank <= 4) {
-                    height = 8000000; // FOR COUNTRIES
+                    height = 5000000; // FOR COUNTRIES
                 } else if (searchedplacerank > 4 && searchedplacerank <= 8) {
                     height = 1000000; // FOR STATE/PROVINCE
                 } else if (searchedplacerank > 8 && searchedplacerank <= 12) {
@@ -129,6 +134,7 @@ function searchLocation(query) {
 // Documentation: https://open-meteo.com/en/docs
 
 function fetchWeatherData(latitude, longitude) {
+
   // DEBUG  
   console.log(`Fetching weather data for Latitude: ${latitude}, Longitude: ${longitude}`);
 
@@ -160,6 +166,7 @@ function fetchWeatherData(latitude, longitude) {
       console.log("Elevation:", elevation);
       console.log("Is day:", isDay);
       console.log("Is raining:", isRaining);
+
     })
     .catch((error) => {
       console.error("Error fetching weather data :( ", error);
@@ -196,8 +203,11 @@ function fetchCountryInfoWB(countrycode) {
     fetch(countryInfoUrlWB)
     .then((response) => response.json())
     .then((data) => {
+
         // DEBUG
         console.log("Country info received:", data);  
+
+        // income level
         const incomeLevel = data[1][0].incomeLevel.value;
 
         // DEBUG
@@ -220,6 +230,7 @@ function fetchCountryInfoWIKI(country) {
     fetch(countryInfoUrlWIKI)
     .then((response) => response.json())
     .then((data) => {
+        
         // DEBUG
         console.log("Country info received:", data);
 
@@ -265,7 +276,4 @@ function searchDatabase(text) {
   console.log("Searching for:", text);
 }
 
-// Local storage for search history
-
-
-// favorite locations functionality
+// favorite locations functionality using localStorage
