@@ -84,6 +84,10 @@ Interactive-Map/
 |   |-- index.html
 |   |-- script.js
 |   `-- style.css
+|-- 3D Version/
+|   |-- index.html
+|   |-- script.js
+|   `-- style.css
 |-- docs/
 |   `-- assets/
 |       |-- interactive-map-2d-preview.png
