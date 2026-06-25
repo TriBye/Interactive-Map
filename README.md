@@ -12,8 +12,8 @@
   <a href="https://tribye.github.io/Interactive-Map/2D%20Version/index.html">
     <img alt="Online Preview (2D)" src="https://img.shields.io/badge/Online%20Preview%20(2D)-2563EB?style=for-the-badge&logoColor=white">
   </a>
-  <a href="https://tribye.github.io/Interactive-Map/2-3D%20Version/index.html">
-    <img alt="Online Preview (2/3D)" src="https://img.shields.io/badge/Online%20Preview%20(2/3D)-2563EB?style=for-the-badge&logo=css3&logoColor=white">
+  <a href="https://tribye.github.io/Interactive-Map/3D%20Version/index.html">
+    <img alt="Online Preview (3D)" src="https://img.shields.io/badge/Online%20Preview%20(2/3D)-2563EB?style=for-the-badge&logo=css3&logoColor=white">
   </a>
   <a href="https://github.com/tribye/interactive-map">
     <img alt="Repository" src="https://img.shields.io/badge/Repository-24292F?style=for-the-badge&logo=github&logoColor=white">
