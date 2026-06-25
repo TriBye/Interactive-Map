@@ -35,7 +35,7 @@ Interactive World Map is a lightweight web project that combines a clean map int
 The project includes three versions:
 
 - **2D Version**: a responsive Leaflet map focused on country selection and information.
-- **2D/3D Version**: a hybrid map experience using Leaflet and Cesium for a globe-style exploration mode.
+- **2D/3D Version**: a hybrid map experience using Leaflet and Cesium for a globe-style exploration mode. Not a finished version.
 - **3D Version**: a globe only mode with country searchbar and flyin
 
 ## Preview
@@ -49,12 +49,13 @@ The project includes three versions:
 - Interactive world map with country outlines
 - Hover and click interactions for countries
 - Country details from live REST Countries data
-- Flag, capital, region, population, and currency display
+- Flag, capital, region, population, type, is raining, is daytime and currency display
 - Current temperature for capital cities through Open-Meteo
 - Favorite countries saved with `localStorage`
 - 2D map implementation with Leaflet and OpenStreetMap tiles
 - Optional 3D globe mode powered by Cesium
 - Responsive layout for desktop and smaller screens
+- 3D map to search all locations on the earth
 
 ## Tech Stack
 
@@ -68,9 +69,13 @@ The project includes three versions:
 - **Leaflet**: 2D map rendering
 - **GeoJSON country borders**: country outlines
 - **REST Countries API**: country information and flags
+- **Nominatim**: country informmation
 - **Open-Meteo Geocoding API**: capital city coordinates
 - **Open-Meteo Forecast API**: current weather data
 - **CesiumJS**: 3D globe rendering
+- **Wikimedia API**: flag image source
+- **Worldbank API**: country income information
+
 
 ## Project Structure
 
